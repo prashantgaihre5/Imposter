@@ -93,25 +93,13 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
               const SizedBox(height: 8),
               
               // Input Field
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _playerController,
-                      textCapitalization: TextCapitalization.words,
-                      maxLength: 12,
-                      buildCounter: (context, {required currentLength, required isFocused, maxLength}) => null,
-                      onSubmitted: (_) => _addPlayer(),
-                      decoration: const InputDecoration(
-                        hintText: 'Enter player name...',
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  GestureDetector(
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final stacked = constraints.maxWidth < 360;
+                  final addButton = GestureDetector(
                     onTap: _addPlayer,
                     child: Container(
-                      width: 52,
+                      width: stacked ? double.infinity : 52,
                       height: 52,
                       decoration: BoxDecoration(
                         color: AppColors.accentPurple,
@@ -119,8 +107,38 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                       ),
                       child: const Icon(Icons.add, color: AppColors.textPrimary),
                     ),
-                  ),
-                ],
+                  );
+
+                  final textField = TextField(
+                    controller: _playerController,
+                    textCapitalization: TextCapitalization.words,
+                    maxLength: 12,
+                    buildCounter: (context, {required currentLength, required isFocused, maxLength}) => null,
+                    onSubmitted: (_) => _addPlayer(),
+                    decoration: const InputDecoration(
+                      hintText: 'Enter player name...',
+                    ),
+                  );
+
+                  if (stacked) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        textField,
+                        const SizedBox(height: 12),
+                        addButton,
+                      ],
+                    );
+                  }
+
+                  return Row(
+                    children: [
+                      Expanded(child: textField),
+                      const SizedBox(width: 12),
+                      addButton,
+                    ],
+                  );
+                },
               ),
               const SizedBox(height: 12),
 
@@ -869,22 +887,33 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                         ),
                       )
                     else
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 1,
-                          mainAxisExtent: 120,
-                          mainAxisSpacing: 12,
-                        ),
-                        itemCount: filteredCategories.length,
-                        itemBuilder: (context, index) {
-                          final cat = filteredCategories[index];
-                          final isSelected = session.selectedCategoryIds.contains(cat.id);
-                          return CategorySelectionCard(
-                            category: cat,
-                            selected: isSelected,
-                            onTap: () => notifier.selectCategory(cat),
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final crossAxisCount = constraints.maxWidth >= 900
+                              ? 3
+                              : constraints.maxWidth >= 560
+                                  ? 2
+                                  : 1;
+                          final mainAxisExtent = crossAxisCount == 1 ? 120.0 : 136.0;
+                          return GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: crossAxisCount,
+                              mainAxisExtent: mainAxisExtent,
+                              crossAxisSpacing: 12,
+                              mainAxisSpacing: 12,
+                            ),
+                            itemCount: filteredCategories.length,
+                            itemBuilder: (context, index) {
+                              final cat = filteredCategories[index];
+                              final isSelected = session.selectedCategoryIds.contains(cat.id);
+                              return CategorySelectionCard(
+                                category: cat,
+                                selected: isSelected,
+                                onTap: () => notifier.selectCategory(cat),
+                              );
+                            },
                           );
                         },
                       ),

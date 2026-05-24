@@ -67,23 +67,22 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ).animate().fadeIn(delay: 420.ms, duration: AppDurations.medium),
                     const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Wrap(
+                      alignment: WrapAlignment.spaceBetween,
+                      runSpacing: 8,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        Expanded(
-                          child: Text(
-                            'SELECT MODE',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.spaceMono(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.5,
-                              color: AppColors.textSecondary,
-                            ),
+                        Text(
+                          'SELECT MODE',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.spaceMono(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.5,
+                            color: AppColors.textSecondary,
                           ),
                         ),
-                        const SizedBox(width: 12),
                         const AppAnimatedChip(
                           label: 'Classic ready',
                           selected: true,
@@ -93,48 +92,54 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ).animate().fadeIn(delay: 500.ms),
                     const SizedBox(height: 12),
-                    GridView.count(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      childAspectRatio: 0.9,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: [
-                        _buildModeCard(
-                          context: context,
-                          title: 'Classic Social',
-                          description: 'The clean detective-first version for mixed groups.',
-                          isActive: true,
-                          color: AppColors.detectiveBlue,
-                          icon: Icons.search_rounded,
-                          onTap: () => context.push('/setup'),
-                        ),
-                        _buildModeCard(
-                          context: context,
-                          title: 'Undercover',
-                          description: 'A tense suspect-focused variation with sharper reads.',
-                          isActive: false,
-                          color: AppColors.suspectRed,
-                          icon: Icons.visibility_off_rounded,
-                        ),
-                        _buildModeCard(
-                          context: context,
-                          title: 'Interrogation',
-                          description: 'Faster rounds, tighter clues, and less room to hide.',
-                          isActive: false,
-                          color: AppColors.accentAmber,
-                          icon: Icons.timer_outlined,
-                        ),
-                        _buildModeCard(
-                          context: context,
-                          title: 'Chaos Mode',
-                          description: 'Multiple impostors and enough noise to fracture the room.',
-                          isActive: false,
-                          color: AppColors.accentGreen,
-                          icon: Icons.cyclone,
-                        ),
-                      ],
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final crossAxisCount = constraints.maxWidth < 720 ? 1 : 2;
+                        final childAspectRatio = crossAxisCount == 1 ? 1.55 : 0.9;
+                        return GridView.count(
+                          crossAxisCount: crossAxisCount,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                          childAspectRatio: childAspectRatio,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          children: [
+                            _buildModeCard(
+                              context: context,
+                              title: 'Classic Social',
+                              description: 'The clean detective-first version for mixed groups.',
+                              isActive: true,
+                              color: AppColors.detectiveBlue,
+                              icon: Icons.search_rounded,
+                              onTap: () => context.push('/setup'),
+                            ),
+                            _buildModeCard(
+                              context: context,
+                              title: 'Undercover',
+                              description: 'A tense suspect-focused variation with sharper reads.',
+                              isActive: false,
+                              color: AppColors.suspectRed,
+                              icon: Icons.visibility_off_rounded,
+                            ),
+                            _buildModeCard(
+                              context: context,
+                              title: 'Interrogation',
+                              description: 'Faster rounds, tighter clues, and less room to hide.',
+                              isActive: false,
+                              color: AppColors.accentAmber,
+                              icon: Icons.timer_outlined,
+                            ),
+                            _buildModeCard(
+                              context: context,
+                              title: 'Chaos Mode',
+                              description: 'Multiple impostors and enough noise to fracture the room.',
+                              isActive: false,
+                              color: AppColors.accentGreen,
+                              icon: Icons.cyclone,
+                            ),
+                          ],
+                        );
+                      },
                     ),
                     const SizedBox(height: 16),
                     Column(
@@ -171,8 +176,10 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: AppColors.bgSurface.withValues(alpha: 0.62),
       borderColor: AppColors.borderSide.color.withValues(alpha: 0.85),
       shadowAlpha: 0.07,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        runSpacing: 8,
         children: [
           IconButton(
             onPressed: () => context.push('/settings'),
@@ -196,137 +203,145 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildHeroCard() {
-    return SizedBox(
-      height: 240,
-      child: AppGlassCard(
-        padding: EdgeInsets.zero,
-        borderRadius: AppRadius.xl,
-        backgroundColor: AppColors.bgSurface.withValues(alpha: 0.54),
-        borderColor: AppColors.borderSide.color.withValues(alpha: 0.78),
-        shadowAlpha: 0.09,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(AppRadius.xl),
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: DecoratedBox(
-                        decoration: const BoxDecoration(gradient: AppGradients.splitDetective),
-                      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compact = constraints.maxWidth < 380;
+        final heroHeight = compact ? 280.0 : 240.0;
+        final titleFontSize = compact ? 34.0 : 44.0;
+        return SizedBox(
+          height: heroHeight,
+          child: AppGlassCard(
+            padding: EdgeInsets.zero,
+            borderRadius: AppRadius.xl,
+            backgroundColor: AppColors.bgSurface.withValues(alpha: 0.54),
+            borderColor: AppColors.borderSide.color.withValues(alpha: 0.78),
+            shadowAlpha: 0.09,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadius.xl),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: DecoratedBox(
+                            decoration: const BoxDecoration(gradient: AppGradients.splitDetective),
+                          ),
+                        ),
+                        Expanded(
+                          child: DecoratedBox(
+                            decoration: const BoxDecoration(gradient: AppGradients.splitSuspect),
+                          ),
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      child: DecoratedBox(
-                        decoration: const BoxDecoration(gradient: AppGradients.splitSuspect),
-                      ),
+                  ),
+                  Positioned.fill(
+                    child: Container(
+                      decoration: const BoxDecoration(gradient: AppGradients.cinematicOverlay),
                     ),
-                  ],
-                ),
-              ),
-              Positioned.fill(
-                child: Container(
-                  decoration: const BoxDecoration(gradient: AppGradients.cinematicOverlay),
-                ),
-              ),
-              Positioned(
-                left: -18,
-                top: -12,
-                child: _heroGlow(
-                  size: 120,
-                  color: AppColors.detectiveBlue,
-                  alpha: 0.24,
-                ),
-              ),
-              Positioned(
-                right: -16,
-                bottom: -12,
-                child: _heroGlow(
-                  size: 128,
-                  color: AppColors.suspectRed,
-                  alpha: 0.22,
-                ),
-              ),
-              Positioned.fill(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
+                  ),
+                  Positioned(
+                    left: -18,
+                    top: -12,
+                    child: _heroGlow(
+                      size: 120,
+                      color: AppColors.detectiveBlue,
+                      alpha: 0.24,
+                    ),
+                  ),
+                  Positioned(
+                    right: -16,
+                    bottom: -12,
+                    child: _heroGlow(
+                      size: 128,
+                      color: AppColors.suspectRed,
+                      alpha: 0.22,
+                    ),
+                  ),
+                  Positioned.fill(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _heroTag(
-                            label: 'LEFT: DETECTIVE',
-                            color: AppColors.detectiveBlue,
-                            icon: Icons.manage_search_rounded,
-                          ),
-                          _heroTag(
-                            label: 'RIGHT: SUSPECT',
-                            color: AppColors.suspectRed,
-                            icon: Icons.report_gmailerrorred_rounded,
-                          ),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Shhh! Who Is It?',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.spaceGrotesk(
-                                  fontSize: 44,
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 2.2,
-                                  color: AppColors.textPrimary,
-                                  shadows: const [
-                                    Shadow(
-                                      color: Color(0xAA000000),
-                                      blurRadius: 12,
-                                      offset: Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: [
+                              _heroTag(
+                                label: 'LEFT: DETECTIVE',
+                                color: AppColors.detectiveBlue,
+                                icon: Icons.manage_search_rounded,
                               ),
-                            ).animate().fadeIn(duration: 800.ms).slideY(begin: -0.16, end: 0),
-                          const SizedBox(height: 6),
+                              _heroTag(
+                                label: 'RIGHT: SUSPECT',
+                                color: AppColors.suspectRed,
+                                icon: Icons.report_gmailerrorred_rounded,
+                              ),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Shhh! Who Is It?',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.spaceGrotesk(
+                                    fontSize: titleFontSize,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 2.2,
+                                    color: AppColors.textPrimary,
+                                    shadows: const [
+                                      Shadow(
+                                        color: Color(0xAA000000),
+                                        blurRadius: 12,
+                                        offset: Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ).animate().fadeIn(duration: 800.ms).slideY(begin: -0.16, end: 0),
+                              const SizedBox(height: 6),
+                              Text(
+                                'SPY. MYSTERY. UNDERCOVER PARTY DETECTIVE.',
+                                maxLines: compact ? 2 : 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.spaceMono(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 1.7,
+                                  color: AppColors.textPrimary.withValues(alpha: 0.82),
+                                ),
+                              ).animate().fadeIn(delay: 220.ms, duration: 700.ms),
+                            ],
+                          ),
                           Text(
-                            'SPY. MYSTERY. UNDERCOVER PARTY DETECTIVE.',
-                            maxLines: 1,
+                            'Split-screen atmosphere for suspicion, bluffing, and fast reads.',
+                            maxLines: compact ? 3 : 2,
                             overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.spaceMono(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 1.7,
-                              color: AppColors.textPrimary.withValues(alpha: 0.82),
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textSecondary,
+                              height: 1.35,
                             ),
-                          ).animate().fadeIn(delay: 220.ms, duration: 700.ms),
+                          ).animate().fadeIn(delay: 360.ms, duration: 700.ms),
                         ],
                       ),
-                      Text(
-                        'Split-screen atmosphere for suspicion, bluffing, and fast reads.',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.inter(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.textSecondary,
-                          height: 1.35,
-                        ),
-                      ).animate().fadeIn(delay: 360.ms, duration: 700.ms),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -562,78 +577,81 @@ class HomeScreen extends StatelessWidget {
   void _showHowToPlay(BuildContext context) {
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       backgroundColor: AppColors.bgSurface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         side: BorderSide(color: Color(0xFF243144), width: 0.5),
       ),
       builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: AppColors.textSecondary.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(2),
+        return SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.textSecondary.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'HOW TO PLAY',
-                style: GoogleFonts.spaceGrotesk(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1.5,
-                  color: AppColors.detectiveBlue,
-                ),
-              ),
-              const SizedBox(height: 16),
-              _buildTutorialStep(
-                stepNum: '1',
-                title: 'Pass the Phone',
-                desc: 'Gather 3-15 players. Set names, categories, and start. Pass the phone around secretly.',
-              ),
-              _buildTutorialStep(
-                stepNum: '2',
-                title: 'Secret Roles',
-                desc: 'Civilians get a Secret Word (e.g. Pizza). Impostors get only the Category (Food) and a Vague Hint (e.g. Italian dish).',
-              ),
-              _buildTutorialStep(
-                stepNum: '3',
-                title: 'Give Clues',
-                desc: 'In turns, everyone says ONE word/phrase related to their card. Impostors must blend in!',
-              ),
-              _buildTutorialStep(
-                stepNum: '4',
-                title: 'Vote & Deduce',
-                desc: 'Discuss and vote out the suspect. If you catch the Impostor, they get ONE guess at the Secret Word to steal the win!',
-              ),
-              const SizedBox(height: 16),
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                style: TextButton.styleFrom(
-                  backgroundColor: AppColors.detectiveBlue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(99),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-                child: Text(
-                  'GOT IT!',
+                const SizedBox(height: 24),
+                Text(
+                  'HOW TO PLAY',
                   style: GoogleFonts.spaceGrotesk(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.5,
+                    color: AppColors.detectiveBlue,
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 16),
+                _buildTutorialStep(
+                  stepNum: '1',
+                  title: 'Pass the Phone',
+                  desc: 'Gather 3-15 players. Set names, categories, and start. Pass the phone around secretly.',
+                ),
+                _buildTutorialStep(
+                  stepNum: '2',
+                  title: 'Secret Roles',
+                  desc: 'Civilians get a Secret Word. Impostors get the category context plus a broad hint, so they have something to work with without seeing the answer.',
+                ),
+                _buildTutorialStep(
+                  stepNum: '3',
+                  title: 'Give Clues',
+                  desc: 'In turns, everyone says ONE word/phrase related to their card. Impostors must blend in!',
+                ),
+                _buildTutorialStep(
+                  stepNum: '4',
+                  title: 'Vote & Deduce',
+                  desc: 'Discuss and vote out the suspect. If you catch the Impostor, they get ONE guess at the Secret Word to steal the win!',
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: TextButton.styleFrom(
+                    backgroundColor: AppColors.detectiveBlue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(99),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  child: Text(
+                    'GOT IT!',
+                    style: GoogleFonts.spaceGrotesk(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

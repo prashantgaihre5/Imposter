@@ -7,6 +7,7 @@ enum Difficulty { easy, medium, chaotic }
 
 class WordItem {
   final String word;
+  final String? baseHint;
   final Difficulty difficulty;
   final String? categoryId;
   final List<String> tags;
@@ -15,6 +16,7 @@ class WordItem {
 
   const WordItem({
     required this.word,
+    this.baseHint,
     required this.difficulty,
     this.categoryId,
     this.tags = const [],
@@ -149,6 +151,17 @@ class RandomEngine {
       _ => socialHints,
     };
 
+    final baseHint = item.baseHint?.trim();
+    if (baseHint != null && baseHint.isNotEmpty) {
+      final normalized = baseHint.endsWith('.') ? baseHint.substring(0, baseHint.length - 1) : baseHint;
+      final closer = item.difficulty == Difficulty.chaotic
+          ? ' Keep the clue playful and indirect.'
+          : item.difficulty == Difficulty.medium
+              ? ' Keep it broad so the table still has to think.'
+              : ' Keep it simple without saying the exact word.';
+      return '$normalized.$closer';
+    }
+
     final opener = pool[_random.nextInt(pool.length)];
     final closer = item.difficulty == Difficulty.chaotic
         ? ' Keep it loose and party-friendly.'
@@ -168,6 +181,7 @@ class RandomEngine {
       };
       return WordItem(
         word: word.text,
+        baseHint: word.hint,
         difficulty: difficulty,
         categoryId: categoryId,
         tags: const [],

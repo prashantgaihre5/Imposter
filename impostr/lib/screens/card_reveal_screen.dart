@@ -163,83 +163,87 @@ class _CardRevealScreenState extends ConsumerState<CardRevealScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 20),
-                
-                // Active player index header indicator
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final compact = constraints.maxHeight < 760 || constraints.maxWidth < 360;
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      'CARD REVEAL',
-                      style: GoogleFonts.spaceMono(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.5,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    Text(
-                      'PLAYER ${session.activePlayerRevealIndex + 1}/${session.players.length}',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.spaceMono(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.accentPurple,
-                      ),
-                    ),
-                  ],
-                ),
-                
-                const Spacer(),
+                    const SizedBox(height: 12),
 
-                // Passing instruction label
-                Center(
-                  child: Column(
-                    children: [
-                      Text(
-                        'PASS PHONE TO',
+                    // Active player index header indicator
+                    Wrap(
+                      alignment: WrapAlignment.spaceBetween,
+                      runSpacing: 6,
+                      children: [
+                        Text(
+                        'CARD REVEAL',
+                        style: GoogleFonts.spaceMono(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.5,
+                          color: AppColors.textSecondary,
+                        ),
+                        ),
+                        Text(
+                        'PLAYER ${session.activePlayerRevealIndex + 1}/${session.players.length}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.spaceMono(
                           fontSize: 12,
-                          letterSpacing: 2,
-                          color: AppColors.textSecondary,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.accentPurple,
                         ),
-                      ).animate(key: ValueKey('${activePlayer.id}-prompt')).fadeIn().slideY(begin: 0.2, end: 0),
-                      const SizedBox(height: 8),
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          activePlayer.name.toUpperCase(),
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(height: compact ? 20 : 28),
+
+                    // Passing instruction label
+                    Center(
+                      child: Column(
+                        children: [
+                        Text(
+                          'PASS PHONE TO',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.spaceGrotesk(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1.5,
-                            color: AppColors.accentPurple,
+                          style: GoogleFonts.spaceMono(
+                            fontSize: 12,
+                            letterSpacing: 2,
+                            color: AppColors.textSecondary,
                           ),
-                        ),
-                      ).animate(key: ValueKey('${activePlayer.id}-name')).fadeIn().scale(curve: Curves.easeOutBack),
-                    ],
-                  ),
-                ),
+                        ).animate(key: ValueKey('${activePlayer.id}-prompt')).fadeIn().slideY(begin: 0.2, end: 0),
+                        const SizedBox(height: 8),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            activePlayer.name.toUpperCase(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.spaceGrotesk(
+                              fontSize: compact ? 28 : 32,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 1.5,
+                              color: AppColors.accentPurple,
+                            ),
+                          ),
+                        ).animate(key: ValueKey('${activePlayer.id}-name')).fadeIn().scale(curve: Curves.easeOutBack),
+                        ],
+                      ),
+                    ),
 
-                const SizedBox(height: 32),
+                    SizedBox(height: compact ? 20 : 32),
 
-                // Card Layout - 280x420px
-                Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 320),
-                    child: AspectRatio(
-                      aspectRatio: 280 / 420,
-                      child: GestureDetector(
+                    Expanded(
+                      child: Center(
+                        child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 320, maxHeight: 420),
+                        child: AspectRatio(
+                          aspectRatio: 280 / 420,
+                          child: GestureDetector(
                         onTapDown: (_) => _revealCard(),
                         onTapUp: (_) => _hideCard(),
                         onTapCancel: () => _hideCard(),
@@ -492,52 +496,55 @@ class _CardRevealScreenState extends ConsumerState<CardRevealScreen> {
                       ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-
-                const Spacer(),
-
-                // Action button: Next Player / Finish Reveal
-                GestureDetector(
-                  onTap: _isRevealed
-                      ? null
-                      : () {
-                          if (isLastPlayer) {
-                            notifier.nextReveal(); // Automatically advances phase to Play
-                            context.pushReplacement('/play');
-                          } else {
-                            notifier.nextReveal();
-                            setState(() {
-                              _isRevealed = false;
-                            });
-                          }
-                        },
-                  child: Container(
-                    height: 52,
-                    decoration: BoxDecoration(
-                      color: _isRevealed ? AppColors.bgSurface : AppColors.accentPurple,
-                      borderRadius: BorderRadius.circular(99),
-                        border: _isRevealed
-                          ? Border.fromBorderSide(AppColors.borderSide)
-                          : null,
-                    ),
-                    child: Center(
-                      child: Text(
-                        isLastPlayer ? 'START ROUND' : 'NEXT PLAYER',
-                        style: GoogleFonts.spaceGrotesk(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 2,
-                          color: _isRevealed ? AppColors.textSecondary : AppColors.textPrimary,
+                          ),
                         ),
                       ),
                     ),
-                  ),
+
+                    const SizedBox(height: 20),
+
+                    // Action button: Next Player / Finish Reveal
+                    GestureDetector(
+                      onTap: _isRevealed
+                          ? null
+                          : () {
+                              if (isLastPlayer) {
+                                notifier.nextReveal(); // Automatically advances phase to Play
+                                context.pushReplacement('/play');
+                              } else {
+                                notifier.nextReveal();
+                                setState(() {
+                                  _isRevealed = false;
+                                });
+                              }
+                            },
+                      child: Container(
+                        height: 52,
+                        decoration: BoxDecoration(
+                          color: _isRevealed ? AppColors.bgSurface : AppColors.accentPurple,
+                          borderRadius: BorderRadius.circular(99),
+                          border: _isRevealed
+                              ? Border.fromBorderSide(AppColors.borderSide)
+                              : null,
+                        ),
+                        child: Center(
+                          child: Text(
+                            isLastPlayer ? 'START ROUND' : 'NEXT PLAYER',
+                            style: GoogleFonts.spaceGrotesk(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 2,
+                              color: _isRevealed ? AppColors.textSecondary : AppColors.textPrimary,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
                 ),
-                const SizedBox(height: 20),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),

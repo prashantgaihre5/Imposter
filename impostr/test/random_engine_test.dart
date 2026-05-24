@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shhh_who_is_it/data/models/game_session.dart';
 import 'package:shhh_who_is_it/data/models/word_category.dart';
+import 'package:shhh_who_is_it/features/categories/data/category_catalog.dart';
 import 'package:shhh_who_is_it/providers/game_provider.dart';
 import 'package:shhh_who_is_it/utils/random_engine.dart';
 
@@ -50,12 +51,24 @@ void main() {
       final engine = RandomEngine(random: Random(1));
       const item = WordItem(
         word: 'Pizza',
+        baseHint: 'Cheesy round slice party food.',
         difficulty: Difficulty.easy,
         hintStyle: 'social',
       );
 
       final hint = engine.buildIndirectHint(item).toLowerCase();
       expect(hint.contains('pizza'), isFalse);
+    });
+
+    test('catalog categories expose roughly 500 playable entries each', () {
+      expect(categoryCatalog, isNotEmpty);
+      for (final category in categoryCatalog) {
+        expect(
+          category.words.length,
+          greaterThanOrEqualTo(500),
+          reason: '${category.name} should have a large replayable pool.',
+        );
+      }
     });
   });
 
@@ -107,6 +120,20 @@ void main() {
       expect(notifier.state.phase, GamePhase.reveal);
       expect(notifier.state.secretWord, isNotEmpty);
       expect(notifier.state.impostorWordHint, isNotEmpty);
+    });
+
+    test('impostors receive a meaningful hint alongside category context', () {
+      final notifier = GameNotifier();
+      notifier.toggleTimer(false);
+      notifier.selectAllCategories(true);
+      notifier.startRound();
+
+      final impostors = notifier.state.players.where((player) => player.role.name == 'impostor');
+      expect(impostors, isNotEmpty);
+      for (final player in impostors) {
+        expect(player.hint, isNotNull);
+        expect(player.hint!.trim().length, greaterThan(10));
+      }
     });
   });
 }
