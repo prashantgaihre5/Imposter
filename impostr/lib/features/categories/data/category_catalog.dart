@@ -59,26 +59,61 @@ String _variantDifficulty(_SeedWord seed, int styleIndex, int sceneIndex) {
   return 'Easy';
 }
 
+String _batchLabel(int batch) {
+  if (batch == 0) return '';
+  const labels = ['Pulse', 'Focus', 'Mode', 'Cut'];
+  return labels[(batch - 1) % labels.length];
+}
+
+String _buildVariantTitle(_SeedWord seed, _VariantToken style, _VariantToken scene, int batch) {
+  final tail = _batchLabel(batch);
+  final sceneLabel = tail.isEmpty ? scene.label : '${scene.label} $tail';
+  switch ((style.label.length + scene.label.length + batch) % 4) {
+    case 0:
+      return '${style.label} ${seed.text} ${sceneLabel}';
+    case 1:
+      return '${seed.text} ${sceneLabel}';
+    case 2:
+      return '${style.label} ${seed.text}: ${sceneLabel}';
+    default:
+      return '${seed.text}: ${style.label} ${sceneLabel}';
+  }
+}
+
+String _buildVariantHint(_SeedWord seed, _VariantToken style, _VariantToken scene, int batch) {
+  final templates = [
+    '${seed.hint} Lean into the ${style.cue} and ${scene.cue}.',
+    '${seed.hint} Clue the ${scene.cue} without naming it outright.',
+    '${seed.hint} Keep the ${style.cue} in mind and stay indirect.',
+    '${seed.hint} Sell the ${style.label.toLowerCase()} ${scene.label.toLowerCase()} angle, not the exact answer.',
+  ];
+  return templates[(style.label.length + scene.label.length + batch) % templates.length];
+}
+
 List<WordEntry> _buildExpandedWords(List<_SeedWord> seeds) {
   final words = <WordEntry>[];
-  for (final seed in seeds) {
-    for (var styleIndex = 0; styleIndex < _styleTokens.length; styleIndex++) {
-      final style = _styleTokens[styleIndex];
-      for (var sceneIndex = 0; sceneIndex < _sceneTokens.length; sceneIndex++) {
-        final scene = _sceneTokens[sceneIndex];
-        words.add(
-          WordEntry(
-            text: '${style.label} ${seed.text} ${scene.label}',
-            hint: '${seed.hint} Think about the ${style.cue} and ${scene.cue}.',
-            difficulty: _variantDifficulty(seed, styleIndex, sceneIndex),
-            ageGroup: seed.ageGroup,
-          ),
-        );
+  for (var batch = 0; words.length < _targetWordsPerCategory; batch++) {
+    for (final seed in seeds) {
+      for (var styleIndex = 0; styleIndex < _styleTokens.length; styleIndex++) {
+        final style = _styleTokens[styleIndex];
+        for (var sceneIndex = 0; sceneIndex < _sceneTokens.length; sceneIndex++) {
+          final scene = _sceneTokens[sceneIndex];
+          words.add(
+            WordEntry(
+              text: _buildVariantTitle(seed, style, scene, batch),
+              hint: _buildVariantHint(seed, style, scene, batch),
+              difficulty: _variantDifficulty(seed, styleIndex, sceneIndex),
+              ageGroup: seed.ageGroup,
+            ),
+          );
+          if (words.length >= _targetWordsPerCategory) {
+            return words;
+          }
+        }
       }
     }
   }
-  if (words.length <= _targetWordsPerCategory) return words;
-  return words.take(_targetWordsPerCategory).toList(growable: false);
+  return words;
 }
 
 final _specialBoysEditionCategorySeeds = <_SeedWord>[

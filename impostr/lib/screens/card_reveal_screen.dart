@@ -467,10 +467,10 @@ class _CardRevealScreenState extends ConsumerState<CardRevealScreen> {
                                       child: Text(
                                         activePlayer.hint ?? '',
                                         textAlign: TextAlign.center,
-                                        maxLines: 4,
+                                        maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
                                         style: GoogleFonts.inter(
-                                          fontSize: 12.5,
+                                          fontSize: 13,
                                           color: AppColors.textPrimary,
                                           height: 1.3,
                                         ),
