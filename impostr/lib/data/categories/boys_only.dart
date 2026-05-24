@@ -1,0 +1,33 @@
+import '../models/word_category.dart';
+
+const boysOnlyCategory = WordCategory(
+  id: 'boys_only',
+  name: 'Boys Only',
+  description: 'Chaotic, bro-energy prompts and teasing social bait (keep it funny, not offensive).',
+  icon: 'sports_basketball',
+  color: 0xFF6D4C41,
+  type: CategoryType.boysOnly,
+  premium: false,
+  words: [
+    WordEntry(text: 'Bro-code', hint: 'Unspoken rules among bros; loyalty priorities.', difficulty: 'Easy', ageGroup: 'All'),
+    WordEntry(text: 'Roast Session', hint: 'Friendly insults traded in a group chat; funny burns only.', difficulty: 'Medium', ageGroup: 'Gen Z'),
+    WordEntry(text: 'Wingman', hint: 'The pal who helps you approach someone at a party.', difficulty: 'Easy', ageGroup: 'All'),
+    WordEntry(text: 'Gym Flex', hint: 'Showing off gains or gym stories with exaggerated pride.', difficulty: 'Easy', ageGroup: 'Gen Z'),
+    WordEntry(text: 'Snack Run', hint: 'Late-night trip for munchies with the squad.', difficulty: 'Easy', ageGroup: 'All'),
+    WordEntry(text: 'That Guy Energy', hint: 'A specific persona someone embodies; often loud or chaotic.', difficulty: 'Medium', ageGroup: 'Gen Z'),
+    WordEntry(text: 'Clapback', hint: 'A quick witty comeback to someone being shady.', difficulty: 'Easy', ageGroup: 'Gen Z'),
+    WordEntry(text: 'Slide In', hint: 'Privately messaging someone on socials, usually flirting.', difficulty: 'Easy', ageGroup: 'Gen Z'),
+    WordEntry(text: 'Pull-Up', hint: 'Showing up to an event or someone’s place unannounced.', difficulty: 'Easy', ageGroup: 'Gen Z'),
+    WordEntry(text: 'Banter', hint: 'Playful teasing among friends that keeps the mood light.', difficulty: 'Easy', ageGroup: 'All'),
+    WordEntry(text: 'Midnight Dare', hint: 'Silly risky challenge taken at night with the crew.', difficulty: 'Medium', ageGroup: 'Gen Z'),
+    WordEntry(text: 'Phone Throw', hint: 'Dramatic reaction when someone posts embarrasing content.', difficulty: 'Medium', ageGroup: 'Gen Z'),
+    WordEntry(text: 'Alpha Move', hint: 'A bold confident action that impresses the group.', difficulty: 'Medium', ageGroup: 'Gen Z'),
+    WordEntry(text: 'No-Chill', hint: 'Zero patience; overreacting humorously to small things.', difficulty: 'Easy', ageGroup: 'Gen Z'),
+    WordEntry(text: 'Swerve', hint: 'Avoid someone awkward or escape a boring convo.', difficulty: 'Easy', ageGroup: 'Gen Z'),
+    WordEntry(text: 'Bet', hint: 'Agreement or challenge; used like “ok” or “deal”.', difficulty: 'Easy', ageGroup: 'Gen Z'),
+    WordEntry(text: 'Threaten With Meme', hint: 'Jokingly warn someone you’ll roast them with memes.', difficulty: 'Medium', ageGroup: 'Gen Z'),
+    WordEntry(text: 'Cringe Lord', hint: 'Mocking someone for embarrassing online behavior, playful tone.', difficulty: 'Medium', ageGroup: 'Gen Z'),
+    WordEntry(text: 'Locker Legend', hint: 'One who tells wild school/college stories in the group.', difficulty: 'Medium', ageGroup: 'All'),
+    WordEntry(text: 'Bro What', hint: 'Silly disbelief reaction; meme energy', difficulty: 'Easy', ageGroup: 'Gen Z'),
+  ],
+);
