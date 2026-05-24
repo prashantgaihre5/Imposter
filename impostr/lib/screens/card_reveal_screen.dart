@@ -462,7 +462,7 @@ class _CardRevealScreenState extends ConsumerState<CardRevealScreen> {
                                        const SizedBox(height: 6),
                                        Center(
                                          child: Text(
-                                           categoryWords.join(' • '),
+                                           categoryWords.join(', '),
                                            textAlign: TextAlign.center,
                                            maxLines: 4,
                                            overflow: TextOverflow.ellipsis,
