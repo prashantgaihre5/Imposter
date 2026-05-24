@@ -153,6 +153,9 @@ class _CardRevealScreenState extends ConsumerState<CardRevealScreen> {
 
     final activePlayer = session.players[session.activePlayerRevealIndex];
     final isLastPlayer = session.activePlayerRevealIndex == session.players.length - 1;
+    final categoryWords = session.categoriesEnabled && session.selectedCategory != null
+        ? session.selectedCategory!.words.map((word) => word.text).toList(growable: false)
+        : const <String>[];
 
     return PopScope(
       canPop: false,
@@ -440,6 +443,32 @@ class _CardRevealScreenState extends ConsumerState<CardRevealScreen> {
                                             fontSize: 22,
                                             fontWeight: FontWeight.bold,
                                             color: AppColors.textPrimary,
+                                          ),
+                                        ),
+                                    ),
+                                      const SizedBox(height: 16),
+                                      Center(
+                                        child: Text(
+                                          'POSSIBLE WORDS',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: GoogleFonts.spaceMono(
+                                            fontSize: 10,
+                                            color: AppColors.textSecondary,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Center(
+                                        child: Text(
+                                          categoryWords.join(' • '),
+                                          textAlign: TextAlign.center,
+                                          maxLines: 4,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: GoogleFonts.inter(
+                                            fontSize: 12,
+                                            color: AppColors.textPrimary,
+                                            height: 1.3,
                                           ),
                                         ),
                                       ),

@@ -7,6 +7,7 @@ enum Difficulty { easy, medium, chaotic }
 
 class WordItem {
   final String word;
+  final String hint;
   final Difficulty difficulty;
   final String? categoryId;
   final List<String> tags;
@@ -15,6 +16,7 @@ class WordItem {
 
   const WordItem({
     required this.word,
+    required this.hint,
     required this.difficulty,
     this.categoryId,
     this.tags = const [],
@@ -91,7 +93,7 @@ class RandomEngine {
 
     return WordEntry(
       text: chosen.word,
-      hint: buildIndirectHint(chosen),
+      hint: chosen.hint.trim().isEmpty ? buildIndirectHint(chosen) : chosen.hint,
       difficulty: _difficultyLabel(chosen.difficulty),
       ageGroup: 'All',
     );
@@ -168,6 +170,7 @@ class RandomEngine {
       };
       return WordItem(
         word: word.text,
+        hint: word.hint,
         difficulty: difficulty,
         categoryId: categoryId,
         tags: const [],
