@@ -1,7 +1,7 @@
 import '../models/category_model.dart';
 
 const _defaultDescription = 'Fast, social, and easy to guess in a party game.';
-const _targetWordsPerCategory = 512;
+const _targetWordsPerCategory = 500;
 
 class _SeedWord {
   final String text;
