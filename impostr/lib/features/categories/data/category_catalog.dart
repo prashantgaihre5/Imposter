@@ -59,16 +59,20 @@ String _variantDifficulty(_SeedWord seed, int styleIndex, int sceneIndex) {
   return 'Easy';
 }
 
-String _batchLabel(int batch) {
+int _variantTemplateIndex(_VariantToken style, _VariantToken scene, int batch, int templateCount) {
+  return (style.label.length + scene.label.length + batch) % templateCount;
+}
+
+String _variantModifier(int batch) {
   if (batch == 0) return '';
-  const labels = ['Pulse', 'Focus', 'Mode', 'Cut'];
-  return labels[(batch - 1) % labels.length];
+  const modifiers = ['Pulse', 'Focus', 'Mode', 'Cut'];
+  return modifiers[(batch - 1) % modifiers.length];
 }
 
 String _buildVariantTitle(_SeedWord seed, _VariantToken style, _VariantToken scene, int batch) {
-  final tail = _batchLabel(batch);
+  final tail = _variantModifier(batch);
   final sceneLabel = tail.isEmpty ? scene.label : '${scene.label} $tail';
-  switch ((style.label.length + scene.label.length + batch) % 4) {
+  switch (_variantTemplateIndex(style, scene, batch, 4)) {
     case 0:
       return '${style.label} ${seed.text} ${sceneLabel}';
     case 1:
@@ -87,7 +91,7 @@ String _buildVariantHint(_SeedWord seed, _VariantToken style, _VariantToken scen
     '${seed.hint} Keep the ${style.cue} in mind and stay indirect.',
     '${seed.hint} Sell the ${style.label.toLowerCase()} ${scene.label.toLowerCase()} angle, not the exact answer.',
   ];
-  return templates[(style.label.length + scene.label.length + batch) % templates.length];
+  return templates[_variantTemplateIndex(style, scene, batch, templates.length)];
 }
 
 List<WordEntry> _buildExpandedWords(List<_SeedWord> seeds) {
