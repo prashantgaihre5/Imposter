@@ -46,8 +46,14 @@ const _sceneTokens = <_VariantToken>[
   _VariantToken('Vibe', 'table-friendly description'),
 ];
 
-String _variantDifficulty(int styleIndex, int sceneIndex) {
-  final score = styleIndex + sceneIndex;
+String _variantDifficulty(_SeedWord seed, int styleIndex, int sceneIndex) {
+  final normalized = seed.difficulty.toLowerCase();
+  final baseline = normalized.contains('hard') || normalized.contains('chaotic')
+      ? 3
+      : normalized.contains('medium')
+          ? 1
+          : 0;
+  final score = baseline + styleIndex + sceneIndex;
   if (score >= 11) return 'Chaotic';
   if (score >= 6) return 'Medium';
   return 'Easy';
@@ -64,7 +70,7 @@ List<WordEntry> _buildExpandedWords(List<_SeedWord> seeds) {
           WordEntry(
             text: '${style.label} ${seed.text} ${scene.label}',
             hint: '${seed.hint} Think about the ${style.cue} and ${scene.cue}.',
-            difficulty: _variantDifficulty(styleIndex, sceneIndex),
+            difficulty: _variantDifficulty(seed, styleIndex, sceneIndex),
             ageGroup: seed.ageGroup,
           ),
         );
