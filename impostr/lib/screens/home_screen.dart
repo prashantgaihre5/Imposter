@@ -620,7 +620,7 @@ class HomeScreen extends StatelessWidget {
                 _buildTutorialStep(
                   stepNum: '2',
                   title: 'Secret Roles',
-                  desc: 'Civilians get a Secret Word. Impostors get the category context plus a broad hint, so they have something to work with without seeing the answer.',
+                  desc: 'Civilians get a Secret Word. Impostors get category context plus a broad hint—for example, Food + “Italian dish”—so they have something to work with without seeing the answer.',
                 ),
                 _buildTutorialStep(
                   stepNum: '3',

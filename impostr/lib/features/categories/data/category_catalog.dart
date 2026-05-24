@@ -25,7 +25,7 @@ class _VariantToken {
 }
 
 const _styleTokens = <_VariantToken>[
-  _VariantToken('Classic', 'most recognisable version'),
+  _VariantToken('Classic', 'most recognizable version'),
   _VariantToken('Street', 'casual everyday feel'),
   _VariantToken('Midnight', 'after-dark energy'),
   _VariantToken('Weekend', 'social hangout mood'),
