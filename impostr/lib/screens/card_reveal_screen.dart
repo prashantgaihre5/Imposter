@@ -446,32 +446,34 @@ class _CardRevealScreenState extends ConsumerState<CardRevealScreen> {
                                           ),
                                         ),
                                     ),
-                                      const SizedBox(height: 16),
-                                      Center(
-                                        child: Text(
-                                          'POSSIBLE WORDS',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.spaceMono(
-                                            fontSize: 10,
-                                            color: AppColors.textSecondary,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      Center(
-                                        child: Text(
-                                          categoryWords.join(' • '),
-                                          textAlign: TextAlign.center,
-                                          maxLines: 4,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.inter(
-                                            fontSize: 12,
-                                            color: AppColors.textPrimary,
-                                            height: 1.3,
-                                          ),
-                                        ),
-                                      ),
+                                      if (categoryWords.isNotEmpty) ...[
+                                       const SizedBox(height: 16),
+                                       Center(
+                                         child: Text(
+                                           'POSSIBLE WORDS',
+                                           maxLines: 1,
+                                           overflow: TextOverflow.ellipsis,
+                                           style: GoogleFonts.spaceMono(
+                                             fontSize: 10,
+                                             color: AppColors.textSecondary,
+                                           ),
+                                         ),
+                                       ),
+                                       const SizedBox(height: 6),
+                                       Center(
+                                         child: Text(
+                                           categoryWords.join(' • '),
+                                           textAlign: TextAlign.center,
+                                           maxLines: 4,
+                                           overflow: TextOverflow.ellipsis,
+                                           style: GoogleFonts.inter(
+                                             fontSize: 12,
+                                             color: AppColors.textPrimary,
+                                             height: 1.3,
+                                           ),
+                                         ),
+                                       ),
+                                      ],
                                       const SizedBox(height: 16),
                                     ] else ...[
                                       const SizedBox(height: 16),
